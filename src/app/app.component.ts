@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { AuthService } from './core/services/auth.service';
 
 @Component({
@@ -7,11 +8,13 @@ import { AuthService } from './core/services/auth.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'app-share-movies';
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly title: Title
+  ) {}
 
   ngOnInit(): void {
-    console.log('AppComponent');
+    this.title.setTitle('Share Movies App');
     this.authService.getProfile().subscribe();
   }
 }
