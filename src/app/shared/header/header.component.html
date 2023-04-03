@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="homepage">
+        <span class="icon" nz-icon nzType="home" nzTheme="outline"></span>
+        <span class="web-name">Funny Movies</span>
+    </div>
+    <div class="functional">
+        <ng-container *ngIf="!(currentUser$ | async)">
+            <div class="btn-auth">
+                <button nz-button nzType="primary" routerLink="/auth/login">Login</button>
+            </div>
+            <div class=" btn-auth">
+                <button nz-button nzType="primary" routerLink="/auth/register">Register</button>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="(currentUser$ | async) as currentUser">
+            <div class="email"><strong>Welcome</strong>{{currentUser?.email}}</div>
+            <div class="btn-auth">
+                <button nz-button nzType="primary" (click)="onShareVideo()">Share Movie</button>
+            </div>
+            <div class="btn-auth">
+                <button nz-button nzType="primary" routerLink="/" (click)="onLogout()">Logout</button>
+            </div>
+        </ng-container>
+    </div>
+    <nz-modal [(nzVisible)]="isVisible" nzClosable="false" (nzOnCancel)="handleCancel()" nzClass="modal-wrapper">
+        <div *nzModalContent>
+            <div class="wrapper-content">
+                <span>Title:</span>
+                <input #title class="input-url" nz-input placeholder="Please input title" nzSize="default" />
+            </div>
+            <div class="wrapper-content">
+                <span>Description:</span>
+                <input #description class="input-url" nz-input placeholder="Please input description"
+                    nzSize="default" />
+            </div>
+            <div class="wrapper-content">
+                <span>Youtube URL:</span>
+                <input #url class="input-url" nz-input placeholder="Please input youtube url" nzSize="default" />
+            </div>
+            <div class="btn-action">
+                <span></span>
+                <button nz-button nzType="primary" (click)="submit(title.value, description.value, url.value)"
+                    [nzLoading]="isConfirmLoading">
+                    Share
+                </button>
+            </div>
+        </div>
+        <div *nzModalFooter nzClass="modal-footer"></div>
+    </nz-modal>
+</div>
