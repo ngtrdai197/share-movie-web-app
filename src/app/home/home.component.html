@@ -1,0 +1,20 @@
+<ng-container>
+    <div class="search-results" infinite-scroll [infiniteScrollDistance]="0" [infiniteScrollThrottle]="500"
+        (scrolled)="onScrollDown()">
+        <ul>
+            <li *ngFor="let movie of (moviesResponse$ | async)?.data">
+                <div class="video">
+                    <iframe [src]="movie?.videoUrl || '' | safe" title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="content">
+                    <p class="title">{{movie?.title}}</p>
+                    <p class="shared-by"><strong>Shared By</strong>: {{movie?.sharedBy}}</p>
+                    <p class="description"><strong>Description</strong>: {{movie?.description}}</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</ng-container>
