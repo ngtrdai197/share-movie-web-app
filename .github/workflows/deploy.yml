@@ -1,27 +1,47 @@
-name: Build and Deploy
+name: Deploy to Production
+
 on:
-  push:
-    branches:
-      - main #thay vì "main" có thể dùng là tên branch của bạn
+  pull_request:
+    types: [closed]
+
 jobs:
-  build-and-deploy:
+  build-and-push:
+    name: Build and push to Docker
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install Dependencies
-        run: npm install
-      - name: Build Angular Application
-        run: npm run build --prod
-      - name: Deploy to Github Pages
-        uses: peaceiris/actions-gh-pages@v3.7.0
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
         with:
-          github_token: ${{ secrets.CR_PAT }}
-          publish_dir: ./dist/app-share-movies/
+          context: .
+          push: true
+          tags: ngtrdai197/${{ env.IMAGE_NAME }}:latest,ngtrdai197/${{env.IMAGE_NAME}}:${{ github.sha }}
+    env:
+      IMAGE_NAME: share-movie-app
+
+  deploy-api:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Connect via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: '22'
+          script: |
+            echo "Connected to EC2 instance via SSH." && cd ./share_movie_app &&
+              sh ./share_movie_app.sh
