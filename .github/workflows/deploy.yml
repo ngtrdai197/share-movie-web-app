@@ -1,8 +1,9 @@
 name: Deploy to Production
 
 on:
-  pull_request:
-    types: [closed]
+  push:
+    branches:
+      - main
 
 jobs:
   build-and-push:
