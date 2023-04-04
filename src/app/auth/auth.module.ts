@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { IconDefinition } from '@ant-design/icons-angular';
+import { LockFill, UserOutline } from '@ant-design/icons-angular/icons';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -9,6 +11,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -27,6 +30,8 @@ const routes: Routes = [
   },
 ];
 
+const icons: IconDefinition[] = [LockFill, UserOutline];
+
 @NgModule({
   declarations: [AuthComponent, LoginComponent, RegisterComponent],
   imports: [
@@ -35,7 +40,7 @@ const routes: Routes = [
     NzFormModule,
     NzButtonModule,
     NzInputModule,
-    NzIconModule,
+    NzIconModule.forChild(icons),
     ReactiveFormsModule,
   ],
 })
