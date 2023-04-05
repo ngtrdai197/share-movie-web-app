@@ -9,11 +9,11 @@ import { MovieService } from '../core/services/movie.service';
 })
 export class HomeComponent implements OnInit {
   private page = 1;
-  private perPage = 3;
+  private perPage = 5;
   private loading = false;
 
   public moviesResponse$ = this.movieService.listMovies$;
-  constructor(private readonly movieService: MovieService) {}
+  constructor(private readonly movieService: MovieService) { }
 
   ngOnInit(): void {
     this.loadMovies();

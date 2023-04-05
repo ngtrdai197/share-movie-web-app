@@ -8,8 +8,10 @@ import {
   ICreateMovie,
   IGetMoviesRequest,
   IGetMoviesResponse,
-  IMovie,
+  IMovie
 } from '../interfaces/movie.interface';
+
+import uniqBy from 'lodash.uniqby';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +21,7 @@ export class MovieService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly notification: NzNotificationService
-  ) {}
+  ) { }
 
   public getListMovies(request: IGetMoviesRequest) {
     const params = new HttpParams()
@@ -37,7 +39,7 @@ export class MovieService {
             this.listMovies$.next(state);
           } else {
             state = {
-              data: [...currentValue.data, ...response.data],
+              data: uniqBy([...currentValue.data, ...response.data], (o) => o.id),
               paginate: response.paginate,
             };
             this.listMovies$.next(state);
@@ -73,7 +75,7 @@ export class MovieService {
             };
           } else {
             state = {
-              data: [...currentValue.data, response],
+              data: uniqBy([...currentValue.data, response], (o) => o.id),
               paginate: {
                 ...currentValue.paginate,
                 total: currentValue.paginate.total + 1,
